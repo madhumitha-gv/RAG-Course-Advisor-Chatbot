@@ -22,7 +22,8 @@ User Query
                                                    Answer with Source Citations
 ```
 
-**Why hybrid retrieval?** Neither retriever alone handles the full query spectrum. BM25 excels at exact matches — a student typing `DSCI-D590` needs lexical precision. FAISS captures semantic similarity — a question about "machine learning electives" should surface courses described as "predictive modeling" or "statistical learning." Reciprocal Rank Fusion merges both ranked lists without requiring score normalization across different scales.
+**Why hybrid retrieval?**
+Neither retriever alone handles the full query spectrum. BM25 excels at exact matches — a student typing `DSCI-D590` needs lexical precision. FAISS captures semantic similarity — a question about "machine learning electives" should surface courses described as "predictive modeling" or "statistical learning." Reciprocal Rank Fusion merges both ranked lists without requiring score normalization across different scales.
 
 ## Tech Stack
 
