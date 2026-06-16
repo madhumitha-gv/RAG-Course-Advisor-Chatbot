@@ -1,0 +1,32 @@
+# Environment
+.env
+venv/
+.venv/
+
+# Data (PDFs are large, don't push raw)
+data/raw/*.pdf
+data/processed/
+
+# Indexes (rebuild locally)
+indexes/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml

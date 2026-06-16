@@ -1,0 +1,26 @@
+# PDF extraction
+pdfplumber==0.11.4
+
+# Embeddings
+sentence-transformers==3.4.1
+
+# Vector store
+faiss-cpu==1.9.0.post1
+
+# Lexical retrieval
+rank-bm25==0.2.2
+
+# LLM (via HuggingFace Inference API)
+huggingface_hub>=0.25.0
+
+# Text processing
+nltk==3.9.1
+
+# App
+streamlit==1.41.1
+
+# Utils
+python-dotenv==1.0.1
+tqdm==4.67.1
+
+mistralai==0.1.0
