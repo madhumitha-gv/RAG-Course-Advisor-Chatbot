@@ -2,7 +2,7 @@
 
 AI-powered course recommender chatbot for graduate students at the **Luddy School of Informatics, Computing, and Engineering**, Indiana University Bloomington.
 
-Uses **Retrieval-Augmented Generation (RAG)** with hybrid retrieval — combining **BM25 lexical search** with **FAISS semantic search** — over 10 official program handbooks to deliver grounded, citation-backed advising responses via a Streamlit chat interface.
+Built with **Retrieval-Augmented Generation (RAG)** using hybrid retrieval that combines **BM25 lexical search** with **FAISS semantic search** over 10 official program handbooks. Delivers grounded, citation-backed advising responses through a Streamlit chat interface.
 
 ## Architecture
 
@@ -22,8 +22,15 @@ User Query
                                                    Answer with Source Citations
 ```
 
-**Why hybrid retrieval?**
-Neither retriever alone handles the full query spectrum. BM25 excels at exact matches — a student typing `DSCI-D590` needs lexical precision. FAISS captures semantic similarity — a question about "machine learning electives" should surface courses described as "predictive modeling" or "statistical learning." Reciprocal Rank Fusion merges both ranked lists without requiring score normalization across different scales.
+### Why hybrid retrieval?
+
+Neither retriever alone handles the full query spectrum.
+
+**BM25** excels at exact matches. A student searching for `DSCI-D590` needs lexical precision, and BM25 finds that exact course code.
+
+**FAISS** captures semantic similarity. A question about "machine learning electives" should also surface courses described as "predictive modeling" or "statistical learning," even when those exact words aren't in the query.
+
+**Reciprocal Rank Fusion (RRF)** merges both ranked lists using ranks instead of scores, which avoids the problem of normalizing BM25 scores and cosine similarity scores that live on completely different scales.
 
 ## Tech Stack
 
@@ -33,7 +40,7 @@ Neither retriever alone handles the full query spectrum. BM25 excels at exact ma
 | Embeddings | `all-MiniLM-L6-v2` | 80MB, CPU-friendly, strong performance on short-text retrieval |
 | Vector Search | `FAISS` (IndexFlatIP) | Raw score access required for RRF fusion; no persistence overhead |
 | Lexical Search | `BM25Okapi` | Exact-match retrieval for course codes, policy terms, proper nouns |
-| Fusion | Reciprocal Rank Fusion | Rank-based fusion — no score normalization needed between retrievers |
+| Fusion | Reciprocal Rank Fusion | Rank-based fusion, no score normalization needed between retrievers |
 | LLM | Mistral Small (via API) | Strong instruction-following for grounded, context-only QA |
 | Chunking | Section-based + size fallback | Preserves semantic coherence of handbook sections |
 | Frontend | Streamlit | Chat UI with expandable source citations |
@@ -43,8 +50,8 @@ Neither retriever alone handles the full query spectrum. BM25 excels at exact ma
 10 official Luddy graduate handbooks across 8 programs:
 
 - Computer Science (PhD, MS, Accelerated MS)
-- Data Science — Residential (MS)
-- Data Science — Online (MS)
+- Data Science, Residential (MS)
+- Data Science, Online (MS)
 - Human-Computer Interaction Design (MS)
 - Informatics (MS, PhD)
 - Information & Library Science (MS, PhD)
@@ -76,7 +83,7 @@ Place all 10 PDF handbooks in `data/raw/`. See `src/config.py` → `PDF_SOURCES`
 
 ### 4. Build the Pipeline
 
-Run each phase sequentially — each saves its output for the next:
+Run each phase sequentially. Each saves its output for the next:
 
 ```bash
 # Phase 1: Extract text from PDFs → data/processed/extracted_docs.json
@@ -126,6 +133,7 @@ RAG-Course-Advisor-Chatbot/
 ├── .gitignore
 └── README.md
 ```
+<img width="1132" height="818" alt="image" src="https://github.com/user-attachments/assets/77137c8e-e250-49a0-9c59-a057e3ae4185" />
 
 ## Example Queries
 
