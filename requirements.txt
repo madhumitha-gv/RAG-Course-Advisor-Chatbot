@@ -24,3 +24,7 @@ python-dotenv==1.0.1
 tqdm==4.67.1
 
 mistralai==0.1.0
+
+# Backend API
+fastapi==0.115.6
+uvicorn[standard]==0.34.0

@@ -54,6 +54,35 @@ def _clean_text(text: str) -> str:
     return "\n".join(cleaned)
 
 
+def _markdown_heading(line: str) -> str | None:
+    """Return a Markdown heading title, excluding page marker comments."""
+    match = re.match(r"^#{1,6}\s+(.+?)\s*#*$", line.strip())
+    return match.group(1).strip() if match else None
+
+
+def _markdown_to_sections(markdown: str) -> list[dict]:
+    """Split Markdown into sections while retaining page markers in the text."""
+    sections = []
+    current_heading = "General Information"
+    current_lines = []
+
+    for line in markdown.splitlines():
+        heading = _markdown_heading(line)
+        if heading and current_lines:
+            section_text = "\n".join(current_lines).strip()
+            if section_text:
+                sections.append({"heading": current_heading, "text": section_text})
+            current_heading = heading
+            current_lines = []
+        else:
+            current_lines.append(line)
+
+    section_text = "\n".join(current_lines).strip()
+    if section_text:
+        sections.append({"heading": current_heading, "text": section_text})
+    return sections
+
+
 # ── Section Detection ───────────────────────────────────
 
 # Tighter heading patterns — must look like real section titles
@@ -190,14 +219,18 @@ def chunk_document(doc: dict) -> list[dict]:
         List of chunk dicts with keys:
             chunk_id, text, heading, program, level, source_file
     """
-    # Step 1: Combine all pages into one text block
-    full_text = "\n\n".join(page["text"] for page in doc["pages"])
+    # Step 1: Prefer the extracted Markdown representation; support old JSON artifacts.
+    markdown = doc.get("markdown")
+    if markdown:
+        sections = _markdown_to_sections(markdown)
+    else:
+        full_text = "\n\n".join(page["text"] for page in doc["pages"])
 
-    # Step 2: Clean out headers, footers, junk
-    full_text = _clean_text(full_text)
+        # Step 2: Clean out headers, footers, junk
+        full_text = _clean_text(full_text)
 
-    # Step 3: Split into sections by headings
-    sections = _split_into_sections(full_text)
+        # Step 3: Split legacy plain-text artifacts by headings
+        sections = _split_into_sections(full_text)
 
     # Step 4: Chunk sections, splitting oversized ones
     chunks = []
